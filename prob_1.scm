@@ -1,11 +1,10 @@
 (define (sum-multiples-of-3-or-5-below number)
+  (define (sum-iter sum count)
+    (cond ((= count 0) sum)
+          ((multiple-of-3-or-5? count)
+           (sum-iter (+ sum count) (- count 1)))
+          (else (sum-iter sum (- count 1)))))
   (sum-iter 0 (- number 1)))  ;; returning all the multiples _below_ number
-
-(define (sum-iter sum count)
-  (cond ((= count 0) sum)
-        ((multiple-of-3-or-5? count)
-         (sum-iter (+ sum count) (- count 1)))
-        (else (sum-iter sum (- count 1)))))
 
 (define (multiple-of-3-or-5? number)
   (if (or (multiple-of-3? number) (multiple-of-5? number))
