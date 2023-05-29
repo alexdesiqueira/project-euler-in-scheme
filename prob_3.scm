@@ -36,16 +36,16 @@
 ;; (see _Fundamental theorem of arithmetic_)
 
 (define (prime-factors number)
-  (define (prime-factors-helper count)
+  (define (prime-factors-helper count accum)
     (cond
-     ((> count number) '())
+     ((or (> count number) (equal? accum number)) '())
      ((and (prime? count) (divides? count number))
       (begin
         (display count)
         (newline)
-        (prime-factors-helper (+ count 1))))
-      (else (prime-factors-helper (+ count 1)))))
-  (prime-factors-helper 2))  ; 1 is not prime!
+        (prime-factors-helper (+ count 1) (* count accum))))
+      (else (prime-factors-helper (+ count 1) accum))))
+  (prime-factors-helper 2 1))  ; 1 is not prime!
 
 ;; tests
 (display (prime? 65533))  ; should be #f
