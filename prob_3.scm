@@ -13,25 +13,22 @@
 
 ; defining a function to check if the number is prime.
 ; adapted from SICP, 1.2.6:
-(define (prime? number)
 
+(define (divides? a b)
+  (= (remainder b a) 0))
+
+(define (prime? number)
   (define (smallest-divisor number)
-    (define (divides? a b)
-      (= (remainder b a) 0))
-    (define (find-divisor number test-divisor)
+   (define (find-divisor number test-divisor)
       (cond ((> (square test-divisor) number) number)
             ((divides? test-divisor number) test-divisor)
             (else (find-divisor number (+ test-divisor 1)))))
     (define (square number)
       (* number number))
     (find-divisor number 2))
-
   (if (and (even? number) (not (equal? number 2)))
       #f
       (= number (smallest-divisor number))))
-
-
-(display (prime? 65533))
 
 ;; checking lists in Guile:
 ;; https://www.gnu.org/software/guile/manual/html_node/List-Syntax.html
@@ -39,14 +36,21 @@
 ;; (see _Fundamental theorem of arithmetic_)
 
 (define (prime-factors number)
-  (define (factors-helper count number)
+  (define (prime-factors-helper count)
     (cond
      ((> count number) count)
-     ((and (prime? count) (not (equal? (modulo number count))))
+     ((and (prime? count) (divides? count number))
       (begin
-        (display number)
-        (factors-helper (+ count 1) number)))
-      (else (factors-helper (+ count 1) number))))
-  (factors-helper 1 number))
+        (display count)
+        (newline)
+        (prime-factors-helper (+ count 1))))
+      (else (prime-factors-helper (+ count 1)))))
+  (prime-factors-helper 1))
 
-(display (prime-factors 65533))
+;; tests
+(display (prime? 65533))  ; should be #f
+(newline)
+(display (divides? 2 6))  ; should be #t
+(newline)
+
+(display (prime-factors 13195))
