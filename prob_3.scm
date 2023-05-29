@@ -38,14 +38,14 @@
 (define (prime-factors number)
   (define (prime-factors-helper count)
     (cond
-     ((> count number) count)
+     ((> count number) '())
      ((and (prime? count) (divides? count number))
       (begin
         (display count)
         (newline)
         (prime-factors-helper (+ count 1))))
       (else (prime-factors-helper (+ count 1)))))
-  (prime-factors-helper 1))
+  (prime-factors-helper 2))  ; 1 is not prime!
 
 ;; tests
 (display (prime? 65533))  ; should be #f
@@ -53,4 +53,7 @@
 (display (divides? 2 6))  ; should be #t
 (newline)
 
-(display (prime-factors 13195))
+(display (prime-factors 13195)) ; should show 5, 7, 13, 29
+
+;; results
+(display (prime-factors 600851475143))
