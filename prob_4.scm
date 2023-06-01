@@ -69,3 +69,60 @@
 (display (palindrome? 3443))  ;; should be #t
 (newline)
 (display (palindrome? 793454397))  ;; should be #t
+
+;; now, to find the largest palindrome made from the product of
+;; 3-digit numbers, we start from the top. Very likely, the
+;; largest one is closer to 999 * 999 than to 100 * 100 :)
+(define (largest-palindrome-product-decr a b)
+  (cond
+   ((palindrome? (* a b)) (list a "*" b "==" (* a b)))
+   ((> a 1)
+          (largest-palindrome-product-decr (- a 1) b))
+   ((> b 1)
+          (largest-palindrome-product-decr a (- b 1)))))
+
+;; tests
+(newline)
+(display (largest-palindrome-product-decr 99 99))  ;; should be 9009; 91 * 99
+
+;; got lucky in the previous one. we'll need to modify
+;; the procedure a little bit to use it only with 3-digit
+;; numbers (else, it'll return 91 * 999 == 90909):
+
+
+
+(define (make-range low high)
+  (define (make-range-helper range curr)
+    (if (> curr high)
+        range
+        (begin
+          (set! range (append range (list curr)))
+          (make-range-helper range (+ curr 1)))))
+
+  (let ((range '()))
+    (make-range-helper range low)))
+
+(display (make-range 1 5))
+
+
+(define (largest-palindrome-product a_lowest a_highest b_lowest b_highest)
+  (define (largest-palindrome-helper a_curr b_curr)
+    (cond
+     ((palindrome? (* a_curr b_curr)) (list a_curr "*" b_curr "==" (* a_curr b_curr)))
+     ((> a_curr a_lowest) '())
+     ((> b_curr b_lowest) (largest-palindrome-helper (- a_curr 1) b_highest))
+     (else (largest-palindrome-helper a_curr (- b_curr 1)))))
+
+  (let ((range_a (reverse (make-range a_lowest a_highest)))
+        (range_b (reverse (make-range b_lowest b_highest))))
+    (map (lambda (a_val)
+           (map (lambda (b_val)
+                  (begin
+                    (largest-palindrome-helper a_val b_val)))
+                range_b))
+         range_a)))
+
+
+
+(newline)
+(display (largest-palindrome-product 100 999 100 999))
